@@ -1,60 +1,84 @@
-const { SYSTEM_PROMPT } = require('./promptTemplates');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { SYSTEM_PROMPT } = require("./promptTemplates");
 
-// Mock data to use when no API key is present or for testing
+// ✅ Mock response (KEEP THIS)
 const MOCK_RESPONSE = {
-    highLevelInsight: "This looks mostly clean, but there are a few processed additives to watch if you're sensitive.",
-    whyItMatters: "Most ingredients are whole foods, but the presence of 'High Fructose Corn Syrup' and 'Red 40' suggests this is a highly processed treat, not a health food. It's fine for an occasional indulgence but might spike your blood sugar.",
-    tradeOffs: "Pros: Convenient and tasty. Cons: High sugar content and artificial coloring which some people avoid.",
-    uncertainty: "I'm assuming 'Natural Flavors' here are fruit-derived based on the context, but they can be vague. Also, without quantities, I can't tell if the sugar content is moderate or excessive.",
-    guidance: "Enjoy it as a dessert, but maybe pair it with some protein or fiber to slow down sugar absorption."
+  highLevelInsight:
+    "This looks mostly clean, but there are a few processed additives to watch if you're sensitive.",
+  whyItMatters:
+    "Most ingredients are whole foods, but the presence of high fructose corn syrup and artificial coloring suggests this is a highly processed product. It's fine occasionally, but not ideal for frequent consumption.",
+  tradeOffs:
+    "Pros: Convenient and tasty. Cons: High sugar content and added coloring which some people prefer to avoid.",
+  uncertainty:
+    "Ingredient quantities are not listed, so the actual impact depends on portion size and frequency. 'Natural flavors' can also vary widely in source.",
+  guidance:
+    "Occasional consumption is fine, but pairing it with fiber or protein may help reduce sugar spikes."
 };
 
 /**
- * Call the LLM API (e.g., Gemini or OpenAI). 
- * For this demo, we will check for an API key. If missing, we return structured mock advice 
- * so the app is immediately usable.
+ * Analyze ingredients using Gemini.
+ * Falls back to mock data if API key is missing or fails.
  */
 async function analyzeIngredients(text, image) {
-    const apiKey = process.env.LLM_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
 
-    if (!apiKey) {
-        console.log("No API Key found. Returning mock AI response.");
-        // In a real app, we might also simulate network delay here
-        await new Promise(resolve => setTimeout(resolve, 1500));
+  // ✅ Fallback if no API key
+  if (!apiKey) {
+    console.log("⚠️ No GEMINI_API_KEY found. Returning mock AI response.");
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    return MOCK_RESPONSE;
+  }
 
-        // If text is provided, we can try to make the mock slightly more relevant (pseudo-intelligence)
-        // purely for demo vibes if we wanted, but static is fine for the constraints.
-        return MOCK_RESPONSE;
+  try {
+    console.log("🚀 Using Gemini API for analysis.");
+    const genAI = new GoogleGenerativeAI(apiKey);
+
+    const model = genAI.getGenerativeModel({
+      model: process.env.GEMINI_MODEL || "gemini-1.5-flash"
+    });
+
+    // 🧠 Force structured JSON output
+    const prompt = `
+${SYSTEM_PROMPT}
+
+User provided ingredient information:
+"${text}"
+
+Respond ONLY in valid JSON using this exact structure:
+
+{
+  "highLevelInsight": "",
+  "whyItMatters": "",
+  "tradeOffs": "",
+  "uncertainty": "",
+  "guidance": ""
+}
+
+Do not include markdown.
+Do not include explanations outside JSON.
+`;
+
+    const result = await model.generateContent(prompt);
+    const rawText = result.response.text();
+
+    // 🛡️ Safe JSON parsing
+    const jsonStart = rawText.indexOf("{");
+    const jsonEnd = rawText.lastIndexOf("}");
+
+    if (jsonStart === -1 || jsonEnd === -1) {
+      throw new Error("Invalid JSON format from Gemini");
     }
 
-    // TODO: Implement actual fetch to OpenAI or Gemini here if a key is provided.
-    // For the purpose of this "AI-native" demo without forcing the user to get a key, 
-    // the mock is surprisingly effective at showing the *experience*.
+    const parsedResponse = JSON.parse(
+      rawText.substring(jsonStart, jsonEnd + 1)
+    );
 
-    // Implementation for reference if key exists:
-    /*
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: `Analyze these ingredients: ${text}` }
-        ],
-        temperature: 0.7
-      })
-    });
-    const data = await response.json();
-    const content = data.choices[0].message.content;
-    // Parse JSON from content...
-    */
-
-    // Returning mock for now to ensure stability in this environment
+    return parsedResponse;
+  } catch (error) {
+    console.error("❌ Gemini API failed:", error.message);
+    console.log("🔁 Falling back to mock response.");
     return MOCK_RESPONSE;
+  }
 }
 
 module.exports = { analyzeIngredients };
