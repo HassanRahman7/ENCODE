@@ -1,0 +1,28 @@
+.home-container {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+header {
+    margin-bottom: 3rem;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.error-message {
+    padding: 1rem;
+    margin-top: 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    border-radius: 8px;
+    border: 1px solid var(--danger);
+}
