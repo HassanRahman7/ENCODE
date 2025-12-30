@@ -43,16 +43,48 @@ const Home = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#020617] text-white selection:bg-blue-500/30">
+        <div className="w-full text-gray-900 dark:text-white transition-colors duration-500 selection:bg-emerald-500/30">
 
-            {/* Subtle Ambient Background */}
-            <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/5 rounded-full blur-[120px]" />
-                <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] bg-purple-600/5 rounded-full blur-[100px]" />
+            {/* --- NEW: LIVING ANIMATED BACKGROUND --- */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                {/* Blob 1: Emerald/Blue - Top Left */}
+                <motion.div 
+                    animate={{ 
+                        x: [0, 50, 0], 
+                        y: [0, 30, 0],
+                        scale: [1, 1.1, 1] 
+                    }}
+                    transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[100px] opacity-60
+                               bg-emerald-300/40 dark:bg-blue-600/20" 
+                />
+                
+                {/* Blob 2: Teal/Purple - Bottom Right */}
+                <motion.div 
+                    animate={{ 
+                        x: [0, -30, 0], 
+                        y: [0, -50, 0],
+                        scale: [1, 1.2, 1] 
+                    }}
+                    transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+                    className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-60
+                               bg-teal-200/40 dark:bg-purple-600/10" 
+                />
+
+                {/* Blob 3: Lime/Cyan - Center Floater */}
+                <motion.div 
+                    animate={{ 
+                        x: [0, 40, -40, 0], 
+                        y: [0, -40, 40, 0],
+                    }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    className="absolute top-[30%] left-[20%] w-[30%] h-[30%] rounded-full blur-[90px] opacity-40
+                               bg-lime-200/40 dark:bg-cyan-900/10" 
+                />
             </div>
+            {/* ------------------------------------- */}
 
-            {/* Main Layout Container */}
-            <div className="relative max-w-5xl mx-auto px-6 py-12 md:py-20 flex flex-col items-center min-h-screen">
+            <div className="relative max-w-5xl mx-auto px-6 py-12 md:py-20 flex flex-col items-center min-h-[calc(100vh-100px)]">
 
                 {/* Brand / Header */}
                 <motion.div
@@ -61,14 +93,18 @@ const Home = () => {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-16 space-y-4"
                 >
-                    <div className="inline-flex items-center space-x-2 px-3 py-1 bg-white/5 rounded-full border border-white/5 text-xs font-medium text-blue-300 uppercase tracking-widest backdrop-blur-md">
+                    <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium uppercase tracking-widest backdrop-blur-md border shadow-sm transition-colors duration-500
+                                  bg-white/40 border-emerald-200/50 text-emerald-800 
+                                  dark:bg-white/5 dark:border-white/5 dark:text-blue-300">
                         <Zap className="w-3 h-3" />
                         <span>AI Native Health</span>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-2">
+                    
+                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 transition-colors duration-500 text-gray-900 dark:text-white">
                         Ingredient Co-Pilot
                     </h1>
-                    <p className="text-gray-400 text-lg max-w-lg mx-auto">
+                    
+                    <p className="text-lg max-w-lg mx-auto transition-colors duration-500 text-gray-600 dark:text-gray-400">
                         Instant clarity on what you eat. No databases, just intelligence.
                     </p>
                 </motion.div>
@@ -97,7 +133,6 @@ const Home = () => {
                                 exit={{ opacity: 0 }}
                                 className="w-full flex justify-center py-20"
                             >
-                                {/* Visual Placeholder for Loading State - keeps UI stable */}
                                 <InputSurface onAnalyze={() => { }} isLoading={true} />
                             </motion.div>
                         )}
@@ -122,15 +157,20 @@ const Home = () => {
                                 exit={{ opacity: 0 }}
                                 className="flex flex-col items-center justify-center pt-8"
                             >
-                                <div className="bg-red-500/10 border border-red-500/20 p-8 rounded-3xl max-w-md text-center backdrop-blur-xl">
-                                    <div className="w-14 h-14 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <AlertCircle className="w-7 h-7 text-red-500" />
+                                <div className="p-8 rounded-3xl max-w-md text-center backdrop-blur-xl border transition-colors duration-500 shadow-xl
+                                              bg-white/40 border-red-200 
+                                              dark:bg-red-500/10 dark:border-red-500/20">
+                                    <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4
+                                                  bg-red-100 dark:bg-red-500/20">
+                                        <AlertCircle className="w-7 h-7 text-red-600 dark:text-red-500" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-2">Analysis Failed</h3>
-                                    <p className="text-gray-400 mb-6">{errorMsg}</p>
+                                    <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">Analysis Failed</h3>
+                                    <p className="mb-6 text-gray-600 dark:text-gray-400">{errorMsg}</p>
                                     <button
                                         onClick={resetFlow}
-                                        className="px-8 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-100 rounded-xl transition-colors font-medium"
+                                        className="px-8 py-3 rounded-xl transition-colors font-medium
+                                                 bg-red-100 hover:bg-red-200 text-red-700
+                                                 dark:bg-red-500/20 dark:hover:bg-red-500/30 dark:text-red-100"
                                     >
                                         Try Again
                                     </button>

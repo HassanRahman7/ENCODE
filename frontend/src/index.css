@@ -8,26 +8,27 @@
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   font-weight: 400;
+  /* REMOVED: color-scheme: dark; */
+  /* REMOVED: hardcoded color variables */
+}
 
-  color-scheme: dark;
-  --color-bg-primary: #020617;
-  --color-bg-secondary: #0f172a;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Ensures background covers full screen */
+  width: 100%;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  background-color: var(--color-bg-primary);
-  /* Deeper, cleaner background for "Calm" feel */
-  background: var(--color-bg-primary);
-  color: #f8fafc;
+  /* REMOVED: background-color: ... */
+  /* We let App.jsx handle the background color now */
+  
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-y: scroll;
-  /* Prevent layout shift */
+  overflow-y: auto; /* Changed from scroll to auto to hide bar if not needed */
 }
 
-/* Glass Utilities */
+/* Glass Utilities - Kept these as they are useful helper classes */
 .glass-panel {
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(20px);
