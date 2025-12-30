@@ -12,6 +12,7 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
     const handleDrag = (e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (isLoading) return;
         if (e.type === "dragenter" || e.type === "dragover") {
             setDragActive(true);
         } else if (e.type === "dragleave") {
@@ -22,6 +23,7 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
     const handleDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (isLoading) return;
         setDragActive(false);
 
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
@@ -71,7 +73,7 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
                         <p className="text-gray-400">Upload a label or paste the text below</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-8">
+                    <form onSubmit={handleSubmit} className={`space-y-8 ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
 
                         {/* Unified Input Container */}
                         <div className="space-y-6">
@@ -79,10 +81,10 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
                             {/* Image Input Area - Styled as a feature, not a field */}
                             <div
                                 className={`relative group cursor-pointer rounded-2xl transition-all duration-300 overflow-hidden min-h-[160px] flex items-center justify-center border-2 border-dashed ${dragActive
-                                        ? 'border-blue-500 bg-blue-500/10'
-                                        : preview
-                                            ? 'border-transparent p-0'
-                                            : 'border-white/10 hover:border-white/20 hover:bg-white/5'
+                                    ? 'border-blue-500 bg-blue-500/10'
+                                    : preview
+                                        ? 'border-transparent p-0'
+                                        : 'border-white/10 hover:border-white/20 hover:bg-white/5'
                                     }`}
                                 onClick={() => !preview && fileInputRef.current?.click()}
                                 onDragEnter={handleDrag}
@@ -146,6 +148,7 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
                                 <textarea
                                     value={text}
                                     onChange={(e) => setText(e.target.value)}
+                                    disabled={isLoading}
                                     placeholder="...or paste the ingredient list here"
                                     className="w-full bg-transparent border-none text-white placeholder-gray-600 focus:ring-0 text-center text-lg min-h-[60px] resize-none py-4"
                                     style={{ fieldSizing: "content" }} // Modern CSS, fallback handled by min-h
@@ -168,8 +171,8 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
                     onClick={handleSubmit}
                     disabled={isLoading || (!text && !file)}
                     className={`flex items-center space-x-3 px-10 py-5 rounded-full text-lg font-bold transition-all duration-300 shadow-xl ${isLoading || (!text && !file)
-                            ? 'bg-gray-800/50 text-gray-600 cursor-not-allowed'
-                            : 'bg-white text-black hover:scale-105 hover:shadow-2xl hover:bg-blue-50'
+                        ? 'bg-gray-800/50 text-gray-600 cursor-not-allowed'
+                        : 'bg-white text-black hover:scale-105 hover:shadow-2xl hover:bg-blue-50'
                         }`}
                 >
                     {isLoading ? (
