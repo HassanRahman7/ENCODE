@@ -8,9 +8,31 @@ import { AlertCircle, Zap } from 'lucide-react';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/analyze';
 
 const Home = () => {
-    const [stage, setStage] = useState('input'); // input | loading | success | error
-    const [analysisData, setAnalysisData] = useState(null);
+    // Initialize state from localStorage
+    const [stage, setStage] = useState(() => {
+        return localStorage.getItem('ingredientCopilot_stage') || 'input';
+    });
+
+    const [analysisData, setAnalysisData] = useState(() => {
+        const savedData = localStorage.getItem('ingredientCopilot_data');
+        return savedData ? JSON.parse(savedData) : null;
+    });
+
     const [errorMsg, setErrorMsg] = useState('');
+
+    // Persist stage changes
+    React.useEffect(() => {
+        if (stage) {
+            localStorage.setItem('ingredientCopilot_stage', stage);
+        }
+    }, [stage]);
+
+    // Persist data changes
+    React.useEffect(() => {
+        if (analysisData) {
+            localStorage.setItem('ingredientCopilot_data', JSON.stringify(analysisData));
+        }
+    }, [analysisData]);
 
     const handleAnalyze = async ({ text, file }) => {
         setStage('loading');
@@ -40,6 +62,10 @@ const Home = () => {
         setStage('input');
         setAnalysisData(null);
         setErrorMsg('');
+
+        // Clear localStorage
+        localStorage.removeItem('ingredientCopilot_stage');
+        localStorage.removeItem('ingredientCopilot_data');
     };
 
     return (
@@ -48,38 +74,38 @@ const Home = () => {
             {/* --- NEW: LIVING ANIMATED BACKGROUND --- */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden">
                 {/* Blob 1: Emerald/Blue - Top Left */}
-                <motion.div 
-                    animate={{ 
-                        x: [0, 50, 0], 
+                <motion.div
+                    animate={{
+                        x: [0, 50, 0],
                         y: [0, 30, 0],
-                        scale: [1, 1.1, 1] 
+                        scale: [1, 1.1, 1]
                     }}
                     transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
                     className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[100px] opacity-60
-                               bg-emerald-300/40 dark:bg-blue-600/20" 
+                               bg-emerald-300/40 dark:bg-blue-600/20"
                 />
-                
+
                 {/* Blob 2: Teal/Purple - Bottom Right */}
-                <motion.div 
-                    animate={{ 
-                        x: [0, -30, 0], 
+                <motion.div
+                    animate={{
+                        x: [0, -30, 0],
                         y: [0, -50, 0],
-                        scale: [1, 1.2, 1] 
+                        scale: [1, 1.2, 1]
                     }}
                     transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
                     className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-60
-                               bg-teal-200/40 dark:bg-purple-600/10" 
+                               bg-teal-200/40 dark:bg-purple-600/10"
                 />
 
                 {/* Blob 3: Lime/Cyan - Center Floater */}
-                <motion.div 
-                    animate={{ 
-                        x: [0, 40, -40, 0], 
+                <motion.div
+                    animate={{
+                        x: [0, 40, -40, 0],
                         y: [0, -40, 40, 0],
                     }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                     className="absolute top-[30%] left-[20%] w-[30%] h-[30%] rounded-full blur-[90px] opacity-40
-                               bg-lime-200/40 dark:bg-cyan-900/10" 
+                               bg-lime-200/40 dark:bg-cyan-900/10"
                 />
             </div>
             {/* ------------------------------------- */}
@@ -99,11 +125,11 @@ const Home = () => {
                         <Zap className="w-3 h-3" />
                         <span>AI Native Health</span>
                     </div>
-                    
+
                     <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 transition-colors duration-500 text-gray-900 dark:text-white">
                         Ingredient Co-Pilot
                     </h1>
-                    
+
                     <p className="text-lg max-w-lg mx-auto transition-colors duration-500 text-gray-600 dark:text-gray-400">
                         Instant clarity on what you eat. No databases, just intelligence.
                     </p>
