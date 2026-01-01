@@ -22,18 +22,20 @@ Return a single JSON object with the following structure:
 
 \`\`\`json
 {
-  "highLevelInsight": "A brief, 1-sentence summary of the product's health profile (e.g., 'A heavily processed snack with some hidden sugars.').",
-  "whyItMatters": "A short paragraph explaining the key takeaways. Focus on health impact, processing level, or key additives.",
-  "tradeOffs": "Mention 1-2 pros and cons (e.g., 'Contains real fruit but high in added sugar').",
-  "uncertainty": "Explicitly state if you are unsure about any ingredients due to OCR errors or ambiguity. If none, say 'Confidence is high.'",
+  "highLevelInsight": "A brief, 1-sentence summary of the product's health profile (Max 15 words).",
+  "whyItMatters": "• Bullet 1: Health impact (Max 10 words)\\n• Bullet 2: Key additive warning (Max 10 words)\\n• Bullet 3: Processing level (Max 10 words)",
+  "tradeOffs": "• Bullet 1: Positive aspect (Max 10 words)\\n• Bullet 2: Negative aspect (Max 10 words)",
+  "uncertainty": "Explicitly state if you are unsure about any ingredients. If none, say 'Confidence is high.'",
   "guidance": "A final, friendly recommendation (e.g., 'Enjoy in moderation as a treat.')."
 }
 \`\`\`
 
 **Constraint:**
+- **FORMATTING:** Use the "•" symbol for bullet points. Separate bullets with a newline character (\\n).
+- **LENGTH:** Keep every bullet point UNDER 12 words. Be concise.
 - Do NOT output markdown formatting (like \`\`\`json). Just the raw JSON string.
 - Do NOT include any text outside the JSON object.
-- If the input is gibberish or not food ingredients, politely explain that in the 'highLevelInsight' field and set other fields to empty strings or N/A.
+- If the input is gibberish, explain that in 'highLevelInsight' and set others to empty strings.
 `;
 
 module.exports = {

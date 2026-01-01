@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, AlertTriangle, Info, ArrowLeft, ShieldCheck, Zap, Layers } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, ShieldCheck, Layers } from 'lucide-react';
 
 const container = {
     hidden: { opacity: 0 },
@@ -31,7 +31,9 @@ const AIResponse = ({ data, onReset }) => {
             >
                 <button
                     onClick={onReset}
-                    className="text-gray-500 hover:text-white transition-colors flex items-center text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5"
+                    className="flex items-center text-sm font-medium px-4 py-2 rounded-full transition-colors
+                             text-gray-600 hover:text-gray-900 hover:bg-emerald-500/10
+                             dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5"
                 >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Check another label
@@ -47,8 +49,12 @@ const AIResponse = ({ data, onReset }) => {
 
                 {/* Thought 1: The Verdict (Hero) */}
                 <motion.div variants={cardVariant} className="text-center mb-10">
-                    <h2 className="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3">Analysis Complete</h2>
-                    <p className="text-3xl md:text-5xl font-bold text-white leading-tight">
+                    <h2 className="text-sm font-bold uppercase tracking-wider mb-3
+                                 text-emerald-600 dark:text-blue-400">
+                        Analysis Complete
+                    </h2>
+                    <p className="text-3xl md:text-5xl font-bold leading-tight
+                                text-emerald-950 dark:text-white">
                         {data.highLevelInsight}
                     </p>
                 </motion.div>
@@ -56,15 +62,25 @@ const AIResponse = ({ data, onReset }) => {
                 {/* Thought 2: Why it Matters */}
                 <motion.div
                     variants={cardVariant}
-                    className="bg-white/5 border border-white/5 rounded-3xl p-8 md:p-10 backdrop-blur-xl"
+                    className="rounded-3xl p-8 md:p-10 backdrop-blur-xl border transition-colors duration-500
+                             bg-white/60 border-emerald-100 shadow-sm
+                             dark:bg-white/5 dark:border-white/5 dark:shadow-none"
                 >
                     <div className="flex items-start space-x-4">
-                        <div className="mt-1 p-2 bg-purple-500/10 rounded-xl text-purple-400">
+                        <div className="mt-1 p-2 rounded-xl
+                                      bg-purple-100 text-purple-600
+                                      dark:bg-purple-500/10 dark:text-purple-400">
                             <Layers className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-white mb-2">Why it Matters</h3>
-                            <p className="text-gray-300 text-lg leading-relaxed">{data.whyItMatters}</p>
+                            <h3 className="text-xl font-bold mb-2
+                                         text-gray-900 dark:text-white">
+                                Why it Matters
+                            </h3>
+                            <p className="text-lg leading-relaxed whitespace-pre-line
+                                        text-gray-700 dark:text-gray-300">
+                                {data.whyItMatters}
+                            </p>
                         </div>
                     </div>
                 </motion.div>
@@ -72,15 +88,25 @@ const AIResponse = ({ data, onReset }) => {
                 {/* Thought 3: Trade-offs */}
                 <motion.div
                     variants={cardVariant}
-                    className="bg-white/5 border border-white/5 rounded-3xl p-8 md:p-10 backdrop-blur-xl"
+                    className="rounded-3xl p-8 md:p-10 backdrop-blur-xl border transition-colors duration-500
+                             bg-white/60 border-emerald-100 shadow-sm
+                             dark:bg-white/5 dark:border-white/5 dark:shadow-none"
                 >
                     <div className="flex items-start space-x-4">
-                        <div className="mt-1 p-2 bg-amber-500/10 rounded-xl text-amber-400">
+                        <div className="mt-1 p-2 rounded-xl
+                                      bg-amber-100 text-amber-600
+                                      dark:bg-amber-500/10 dark:text-amber-400">
                             <AlertTriangle className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-white mb-2">Trade-offs</h3>
-                            <p className="text-gray-300 text-lg leading-relaxed">{data.tradeOffs}</p>
+                            <h3 className="text-xl font-bold mb-2
+                                         text-gray-900 dark:text-white">
+                                Trade-offs
+                            </h3>
+                            <p className="text-lg leading-relaxed whitespace-pre-line
+                                        text-gray-700 dark:text-gray-300">
+                                {data.tradeOffs}
+                            </p>
                         </div>
                     </div>
                 </motion.div>
@@ -88,14 +114,22 @@ const AIResponse = ({ data, onReset }) => {
                 {/* Thought 4: Guidance (Primary Conclusion) */}
                 <motion.div
                     variants={cardVariant}
-                    className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/10 rounded-3xl p-8 md:p-10"
+                    className="rounded-3xl p-8 md:p-10 border transition-colors duration-500
+                             bg-gradient-to-br from-emerald-100 to-teal-100 border-emerald-200
+                             dark:from-emerald-500/10 dark:to-teal-500/10 dark:border-emerald-500/10"
                 >
                     <div className="text-center">
-                        <div className="inline-flex p-3 bg-emerald-500/20 rounded-full text-emerald-300 mb-4">
+                        <div className="inline-flex p-3 rounded-full mb-4
+                                      bg-emerald-200 text-emerald-700
+                                      dark:bg-emerald-500/20 dark:text-emerald-300">
                             <ShieldCheck className="w-8 h-8" />
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-2">Recommendation</h3>
-                        <p className="text-xl text-emerald-100/80 font-medium">
+                        <h3 className="text-2xl font-bold mb-2
+                                     text-emerald-900 dark:text-white">
+                            Recommendation
+                        </h3>
+                        <p className="text-xl font-medium
+                                    text-emerald-800 dark:text-emerald-100/80">
                             {data.guidance}
                         </p>
                     </div>
@@ -103,7 +137,8 @@ const AIResponse = ({ data, onReset }) => {
 
                 {/* Footer Info */}
                 {data.uncertainty && (
-                    <motion.p variants={cardVariant} className="text-center text-sm text-gray-600 mt-8">
+                    <motion.p variants={cardVariant} className="text-center text-sm mt-8
+                                                              text-gray-500 dark:text-gray-600">
                         AI Observation: {data.uncertainty}
                     </motion.p>
                 )}

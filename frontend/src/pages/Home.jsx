@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import InputSurface from '../components/InputSurface';
 import AIResponse from '../components/AIResponse';
-import { AlertCircle, Zap } from 'lucide-react';
+import { AlertCircle, Zap, Loader2 } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/analyze';
 
+
+const LOADING_MESSAGES = [
+    " Reading the fine print so you don't have to...",
+    " Decoding hidden additives...",
+    " Checking for sneaky sugars...",
+    " Consulting the health nutrition expert...",
+    " Unmasking the E-numbers...",
+    " Calculating the trade-offs...",
+];
+
 const Home = () => {
-    // Initialize state from localStorage
+    // Initialize state from localStorage (Teammate's Logic)
     const [stage, setStage] = useState(() => {
         return localStorage.getItem('ingredientCopilot_stage') || 'input';
     });
@@ -20,19 +30,36 @@ const Home = () => {
 
     const [errorMsg, setErrorMsg] = useState('');
 
+    // --- NEW: Loading Text State ---
+    const [loadingText, setLoadingText] = useState(LOADING_MESSAGES[0]);
+
     // Persist stage changes
-    React.useEffect(() => {
+    useEffect(() => {
         if (stage) {
             localStorage.setItem('ingredientCopilot_stage', stage);
         }
     }, [stage]);
 
     // Persist data changes
-    React.useEffect(() => {
+    useEffect(() => {
         if (analysisData) {
             localStorage.setItem('ingredientCopilot_data', JSON.stringify(analysisData));
         }
     }, [analysisData]);
+
+    // --- NEW: Cycle through messages when loading ---
+    useEffect(() => {
+        let interval;
+        if (stage === 'loading') {
+            let i = 0;
+            setLoadingText(LOADING_MESSAGES[0]); // Reset to first message
+            interval = setInterval(() => {
+                i = (i + 1) % LOADING_MESSAGES.length;
+                setLoadingText(LOADING_MESSAGES[i]);
+            }, 2000); // Change every 2 seconds
+        }
+        return () => clearInterval(interval);
+    }, [stage]);
 
     const handleAnalyze = async ({ text, file }) => {
         setStage('loading');
@@ -71,44 +98,24 @@ const Home = () => {
     return (
         <div className="w-full text-gray-900 dark:text-white transition-colors duration-500 selection:bg-emerald-500/30">
 
-            {/* --- NEW: LIVING ANIMATED BACKGROUND --- */}
+            {/* --- LIVING ANIMATED BACKGROUND --- */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden">
-                {/* Blob 1: Emerald/Blue - Top Left */}
-                <motion.div
-                    animate={{
-                        x: [0, 50, 0],
-                        y: [0, 30, 0],
-                        scale: [1, 1.1, 1]
-                    }}
+                <motion.div 
+                    animate={{ x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
                     transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[100px] opacity-60
-                               bg-emerald-300/40 dark:bg-blue-600/20"
+                    className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[100px] opacity-60 bg-emerald-300/40 dark:bg-blue-600/20" 
                 />
-
-                {/* Blob 2: Teal/Purple - Bottom Right */}
-                <motion.div
-                    animate={{
-                        x: [0, -30, 0],
-                        y: [0, -50, 0],
-                        scale: [1, 1.2, 1]
-                    }}
+                <motion.div 
+                    animate={{ x: [0, -30, 0], y: [0, -50, 0], scale: [1, 1.2, 1] }}
                     transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                    className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-60
-                               bg-teal-200/40 dark:bg-purple-600/10"
+                    className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-60 bg-teal-200/40 dark:bg-purple-600/10" 
                 />
-
-                {/* Blob 3: Lime/Cyan - Center Floater */}
-                <motion.div
-                    animate={{
-                        x: [0, 40, -40, 0],
-                        y: [0, -40, 40, 0],
-                    }}
+                <motion.div 
+                    animate={{ x: [0, 40, -40, 0], y: [0, -40, 40, 0] }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="absolute top-[30%] left-[20%] w-[30%] h-[30%] rounded-full blur-[90px] opacity-40
-                               bg-lime-200/40 dark:bg-cyan-900/10"
+                    className="absolute top-[30%] left-[20%] w-[30%] h-[30%] rounded-full blur-[90px] opacity-40 bg-lime-200/40 dark:bg-cyan-900/10" 
                 />
             </div>
-            {/* ------------------------------------- */}
 
             <div className="relative max-w-5xl mx-auto px-6 py-12 md:py-20 flex flex-col items-center min-h-[calc(100vh-100px)]">
 
@@ -125,11 +132,11 @@ const Home = () => {
                         <Zap className="w-3 h-3" />
                         <span>AI Native Health</span>
                     </div>
-
+                    
                     <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 transition-colors duration-500 text-gray-900 dark:text-white">
                         Ingredient Co-Pilot
                     </h1>
-
+                    
                     <p className="text-lg max-w-lg mx-auto transition-colors duration-500 text-gray-600 dark:text-gray-400">
                         Instant clarity on what you eat. No databases, just intelligence.
                     </p>
@@ -151,15 +158,35 @@ const Home = () => {
                             </motion.div>
                         )}
 
+                        {/* --- NEW LOADING STATE WITH TEXT --- */}
                         {stage === 'loading' && (
                             <motion.div
                                 key="loading"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="w-full flex justify-center py-20"
+                                className="w-full flex flex-col items-center justify-center py-20 text-center"
                             >
-                                <InputSurface onAnalyze={() => { }} isLoading={true} />
+                                {/* The Glass Panel for Loading */}
+                                <div className="p-10 rounded-3xl backdrop-blur-xl border shadow-2xl transition-all duration-500
+                                              bg-white/40 border-white/50 
+                                              dark:bg-emerald-950/30 dark:border-emerald-500/20">
+                                    
+                                    <div className="relative mb-6">
+                                        <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full animate-pulse"></div>
+                                        <Loader2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400 animate-spin relative z-10 mx-auto" />
+                                    </div>
+
+                                    <motion.p
+                                        key={loadingText} // Key change triggers animation
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="text-xl font-medium text-gray-800 dark:text-emerald-100 min-h-[30px]"
+                                    >
+                                        {loadingText}
+                                    </motion.p>
+                                </div>
                             </motion.div>
                         )}
 
