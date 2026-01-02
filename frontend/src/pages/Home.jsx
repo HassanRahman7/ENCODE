@@ -15,37 +15,24 @@ const LOADING_MESSAGES = [
     " Consulting the health nutrition expert...",
     " Unmasking the E-numbers...",
     " Calculating the trade-offs...",
+    " Scanning for allergens...",
+    " Analyzing nutritional density...",
+    " Breaking down the ingredients...",
+    " Checking for artificial preservatives...",
+    " Reviewing health impact...",
 ];
 
 const Home = () => {
-    // Initialize state from localStorage (Teammate's Logic)
-    const [stage, setStage] = useState(() => {
-        return localStorage.getItem('ingredientCopilot_stage') || 'input';
-    });
+    const [stage, setStage] = useState('input');
 
-    const [analysisData, setAnalysisData] = useState(() => {
-        const savedData = localStorage.getItem('ingredientCopilot_data');
-        return savedData ? JSON.parse(savedData) : null;
-    });
+    const [analysisData, setAnalysisData] = useState(null);
 
     const [errorMsg, setErrorMsg] = useState('');
 
     // --- NEW: Loading Text State ---
     const [loadingText, setLoadingText] = useState(LOADING_MESSAGES[0]);
 
-    // Persist stage changes
-    useEffect(() => {
-        if (stage) {
-            localStorage.setItem('ingredientCopilot_stage', stage);
-        }
-    }, [stage]);
 
-    // Persist data changes
-    useEffect(() => {
-        if (analysisData) {
-            localStorage.setItem('ingredientCopilot_data', JSON.stringify(analysisData));
-        }
-    }, [analysisData]);
 
     // --- NEW: Cycle through messages when loading ---
     useEffect(() => {
@@ -90,9 +77,6 @@ const Home = () => {
         setAnalysisData(null);
         setErrorMsg('');
 
-        // Clear localStorage
-        localStorage.removeItem('ingredientCopilot_stage');
-        localStorage.removeItem('ingredientCopilot_data');
     };
 
     return (
@@ -100,20 +84,20 @@ const Home = () => {
 
             {/* --- LIVING ANIMATED BACKGROUND --- */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden">
-                <motion.div 
+                <motion.div
                     animate={{ x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
                     transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[100px] opacity-60 bg-emerald-300/40 dark:bg-blue-600/20" 
+                    className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[100px] opacity-60 bg-emerald-300/40 dark:bg-blue-600/20"
                 />
-                <motion.div 
+                <motion.div
                     animate={{ x: [0, -30, 0], y: [0, -50, 0], scale: [1, 1.2, 1] }}
                     transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                    className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-60 bg-teal-200/40 dark:bg-purple-600/10" 
+                    className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-60 bg-teal-200/40 dark:bg-purple-600/10"
                 />
-                <motion.div 
+                <motion.div
                     animate={{ x: [0, 40, -40, 0], y: [0, -40, 40, 0] }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="absolute top-[30%] left-[20%] w-[30%] h-[30%] rounded-full blur-[90px] opacity-40 bg-lime-200/40 dark:bg-cyan-900/10" 
+                    className="absolute top-[30%] left-[20%] w-[30%] h-[30%] rounded-full blur-[90px] opacity-40 bg-lime-200/40 dark:bg-cyan-900/10"
                 />
             </div>
 
@@ -132,11 +116,11 @@ const Home = () => {
                         <Zap className="w-3 h-3" />
                         <span>AI Native Health</span>
                     </div>
-                    
+
                     <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 transition-colors duration-500 text-gray-900 dark:text-white">
                         Ingredient Co-Pilot
                     </h1>
-                    
+
                     <p className="text-lg max-w-lg mx-auto transition-colors duration-500 text-gray-600 dark:text-gray-400">
                         Instant clarity on what you eat. No databases, just intelligence.
                     </p>
@@ -171,7 +155,7 @@ const Home = () => {
                                 <div className="p-10 rounded-3xl backdrop-blur-xl border shadow-2xl transition-all duration-500
                                               bg-white/40 border-white/50 
                                               dark:bg-emerald-950/30 dark:border-emerald-500/20">
-                                    
+
                                     <div className="relative mb-6">
                                         <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full animate-pulse"></div>
                                         <Loader2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400 animate-spin relative z-10 mx-auto" />
