@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Upload, ArrowRight, Loader2, Mic, StopCircle } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Upload, ArrowRight, Loader2, Mic, StopCircle, ScanLine, X, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Webcam from "react-webcam"; // New Import
 
 const InputSurface = ({ onAnalyze, isLoading }) => {
     const [text, setText] = useState('');
@@ -12,7 +13,14 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
     // Voice State
     const [isListening, setIsListening] = useState(false);
     const recognitionRef = useRef(null);
+    
+    // Camera Refs
     const fileInputRef = useRef(null);
+    const nativeCameraInputRef = useRef(null); // For Mobile
+    const webcamRef = useRef(null);            // For Laptop
+    
+    // Desktop Webcam State
+    const [showWebcam, setShowWebcam] = useState(false);
 
     // --- REAL-TIME VOICE LOGIC ---
     useEffect(() => {
@@ -122,10 +130,11 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
     };
 
     const clearImage = (e) => {
-        e.stopPropagation();
+        if(e) e.stopPropagation();
         setFile(null);
         setPreview(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
+        if (nativeCameraInputRef.current) nativeCameraInputRef.current.value = "";
     };
 
     const handleSubmit = (e) => {
@@ -135,13 +144,81 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
         onAnalyze({ text: finalSubmitText, file });
     };
 
+    // --- SMART SCAN LOGIC ---
+    const handleScanClick = () => {
+        // Simple check: If user is on a mobile device/tablet, use native camera.
+        // Otherwise, open the webcam modal for laptop users.
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            nativeCameraInputRef.current?.click();
+        } else {
+            setShowWebcam(true);
+        }
+    };
+
+    // Capture photo from Desktop Webcam
+    const captureWebcam = useCallback(() => {
+        const imageSrc = webcamRef.current.getScreenshot();
+        if (imageSrc) {
+            // Convert base64 to a Blob so it acts like a file upload
+            fetch(imageSrc)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], "webcam_capture.jpg", { type: "image/jpeg" });
+                    handleFileSelect(file);
+                    setShowWebcam(false); // Close modal
+                });
+        }
+    }, [webcamRef]);
+
     return (
         <div className="w-full max-w-3xl mx-auto">
+            
+            {/* --- DESKTOP WEBCAM MODAL --- */}
+            <AnimatePresence>
+                {showWebcam && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+                    >
+                        <div className="bg-gray-900 p-6 rounded-3xl w-full max-w-lg border border-white/10 relative">
+                            <h3 className="text-white text-lg font-bold mb-4 text-center">Scan Ingredients</h3>
+                            
+                            <div className="rounded-2xl overflow-hidden border-2 border-emerald-500/50 relative bg-black aspect-video">
+                                <Webcam
+                                    audio={false}
+                                    ref={webcamRef}
+                                    screenshotFormat="image/jpeg"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+
+                            <div className="flex justify-center gap-4 mt-6">
+                                <button 
+                                    onClick={() => setShowWebcam(false)}
+                                    className="px-6 py-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 transition"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    onClick={captureWebcam}
+                                    className="px-6 py-2 rounded-full bg-emerald-500 text-white font-bold hover:bg-emerald-400 flex items-center gap-2"
+                                >
+                                    <Camera className="w-5 h-5"/> Capture
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                // --- GLASSMORPHISM CONTAINER ---
                 className="rounded-3xl p-1 overflow-hidden shadow-2xl transition-all duration-500
                          border border-white/50 dark:border-white/10
                          bg-white/30 backdrop-blur-xl
@@ -178,6 +255,16 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
 
                         <div className="space-y-6">
 
+                            {/* --- MOBILE: Native Camera Input --- */}
+                            <input
+                                type="file"
+                                ref={nativeCameraInputRef}
+                                className="hidden"
+                                accept="image/*"
+                                capture="environment" 
+                                onChange={handleFileChange}
+                            />
+
                             {/* Image Input Area */}
                             <div
                                 className={`relative group cursor-pointer rounded-2xl transition-all duration-300 overflow-hidden min-h-[160px] flex items-center justify-center border-2 border-dashed 
@@ -213,12 +300,14 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
                                             <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-2xl" />
                                             <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
                                                 <button
-                                                    onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                                                    type="button"
+                                                    onClick={(e) => { e.stopPropagation(); handleScanClick(); }} // Use smart scan here too
                                                     className="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-full backdrop-blur-md mb-3 font-medium transition-colors border border-white/20"
                                                 >
                                                     Change Photo
                                                 </button>
                                                 <button
+                                                    type="button"
                                                     onClick={clearImage}
                                                     className="text-white/70 hover:text-white text-sm"
                                                 >
@@ -247,21 +336,34 @@ const InputSurface = ({ onAnalyze, isLoading }) => {
                                 </AnimatePresence>
                             </div>
 
-                            {/* Text Input with Animated Voice Button */}
+                            {/* Text Input with Animated Voice & Scan Button */}
                             <div className="relative">
                                 <textarea
                                     value={displayValue} 
                                     onChange={handleTextChange}
                                     disabled={isLoading}
                                     placeholder={isListening ? "Listening..." : "...or paste the ingredient list here"}
-                                    className={`w-full bg-transparent border-none focus:ring-0 text-center text-lg min-h-[60px] resize-none py-4 pr-12 transition-all duration-300
+                                    // Increased padding-right (pr-24) to fit both buttons
+                                    className={`w-full bg-transparent border-none focus:ring-0 text-center text-lg min-h-[60px] resize-none py-4 pr-24 transition-all duration-300
                                               text-gray-800 placeholder-gray-400 dark:text-white dark:placeholder-gray-600
                                               ${isListening ? 'scale-105' : ''}`}
                                     style={{ fieldSizing: "content" }}
                                 />
                                 
-                                {/* ANIMATED MIC BUTTON */}
-                                <div className="absolute right-0 top-1/2 -translate-y-1/2">
+                                {/* BUTTON GROUP (Scan + Mic) */}
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                    
+                                    {/* SCAN BUTTON (Smart) */}
+                                    <button
+                                        type="button"
+                                        onClick={handleScanClick}
+                                        className="p-3 rounded-full transition-all duration-300 bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 dark:bg-white/5 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10"
+                                        title="Scan Ingredients"
+                                    >
+                                        <ScanLine className="w-5 h-5" />
+                                    </button>
+
+                                    {/* MIC BUTTON */}
                                     <button
                                         type="button"
                                         onClick={toggleListening}
