@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle, ArrowLeft, ShieldCheck, Layers } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, ShieldCheck, Layers, Volume2, VolumeX } from 'lucide-react';
 
 const container = {
     hidden: { opacity: 0 },
@@ -46,6 +46,72 @@ const stateStyles = {
 };
 
 const AIResponse = ({ data, onReset }) => {
+    // --- STATE: Text-to-Speech ---
+    const [isSpeaking, setIsSpeaking] = React.useState(false);
+    const [voice, setVoice] = React.useState(null);
+
+    // --- EFFECT: Load Voices & Cleanup ---
+    React.useEffect(() => {
+        const loadVoices = () => {
+            const availableVoices = window.speechSynthesis.getVoices();
+            // Preference: Female-sounding voices (heuristics based on common names)
+            // 1. Google US English (often female)
+            // 2. Microsoft Zira (female)
+            // 3. Samantha (Mac female)
+            // 4. Any voice having "female" or "woman" in name
+            const preferredVoice = availableVoices.find(v =>
+                v.name.includes("Google US English") ||
+                v.name.includes("Zira") ||
+                v.name.includes("Samantha")
+            ) || availableVoices.find(v => v.name.toLowerCase().includes("female")) || availableVoices[0];
+
+            setVoice(preferredVoice);
+        };
+
+        // Initialize voices
+        loadVoices();
+
+        // Handle async voice loading (Chrome needs this)
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        // Cleanup: Stop speaking when component unmounts
+        return () => {
+            window.speechSynthesis.cancel();
+        };
+    }, []);
+
+    const toggleSpeech = () => {
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            setIsSpeaking(false);
+        } else {
+            if (!data) return;
+
+            // Construct smooth, conversational text
+            const textToSpeak = `
+                Recommendation. ${data.primaryRecommendation || data.guidance}.
+                ${data.contextualExplanation ? data.contextualExplanation : ''}.
+                
+                Why it Matters. ${data.whyItMatters}.
+                
+                Trade-offs. ${data.tradeOffs}.
+            `;
+
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            if (voice) utterance.voice = voice;
+            utterance.rate = 0.95; // Slightly slower for clarity
+            utterance.pitch = 1.05; // Slightly higher often sounds friendlier
+
+            utterance.onend = () => setIsSpeaking(false);
+            utterance.onerror = () => setIsSpeaking(false);
+
+            window.speechSynthesis.speak(utterance);
+            setIsSpeaking(true);
+        }
+    };
+
     if (!data) return null;
 
     // Default to yellow (caution) if undefined, or map 'green'/'red' appropriately
@@ -55,11 +121,11 @@ const AIResponse = ({ data, onReset }) => {
     return (
         <div className="w-full max-w-3xl mx-auto pb-20">
 
-            {/* Navigation */}
+            {/* Navigation & Actions */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex justify-center mb-8"
+                className="flex items-center justify-between mb-8 px-2"
             >
                 <button
                     onClick={onReset}
@@ -69,6 +135,29 @@ const AIResponse = ({ data, onReset }) => {
                 >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Check another label
+                </button>
+
+                {/* --- NEW: Voice Toggle --- */}
+                <button
+                    onClick={toggleSpeech}
+                    aria-label={isSpeaking ? "Stop reading aloud" : "Read analysis aloud"}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 border
+                              ${isSpeaking
+                            ? "bg-emerald-100 border-emerald-300 text-emerald-700 dark:bg-emerald-500/20 dark:border-emerald-500/30 dark:text-emerald-300 shadow-md"
+                            : "bg-white/50 border-gray-200 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:bg-white/5 dark:border-white/10 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white"
+                        }`}
+                >
+                    {isSpeaking ? (
+                        <>
+                            <Volume2 className="w-4 h-4 animate-pulse" />
+                            <span className="text-sm font-medium">Listening</span>
+                        </>
+                    ) : (
+                        <>
+                            <VolumeX className="w-4 h-4" />
+                            <span className="text-sm font-medium">Read Aloud</span>
+                        </>
+                    )}
                 </button>
             </motion.div>
 
