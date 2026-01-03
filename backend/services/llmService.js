@@ -36,7 +36,8 @@ async function analyzeIngredients(ingredientText) {
       tradeOffs: "Analysis not live.",
       uncertainty: "System error.",
       primaryRecommendation: "Please check your backend configuration.",
-      contextualExplanation: "We could not reach the analysis service to provide a contextual recommendation."
+      contextualExplanation: "We could not reach the analysis service to provide a contextual recommendation.",
+      uiState: "yellow"
     };
   }
 }

@@ -27,9 +27,15 @@ Return a single JSON object with the following structure:
   "tradeOffs": "• Bullet 1: Positive aspect (Max 10 words)\\n• Bullet 2: Negative aspect (Max 10 words)",
   "uncertainty": "Explicitly state if you are unsure about any ingredients. If none, say 'Confidence is high.'",
   "primaryRecommendation": "A short, clear 1-2 line summary recommendation answering 'Should I consume this?'. (e.g., 'Generally acceptable, but best enjoyed in moderation.'). Emphasize clarity.",
-  "contextualExplanation": "A short, reasoned paragraph explaining 'Why' and 'Under what conditions'. Discuss frequency (daily vs occasional), portion size, or specific contexts (e.g. 'Good for a workout, but high in sugar for sedentary days'). Be advisory, not prescriptive. Avoid medical absolutes."
+  "contextualExplanation": "A short, reasoned paragraph explaining 'Why' and 'Under what conditions'. Discuss frequency (daily vs occasional), portion size, or specific contexts (e.g. 'Good for a workout, but high in sugar for sedentary days'). Be advisory, not prescriptive. Avoid medical absolutes.",
+  "uiState": "One of: 'green' | 'yellow' | 'red'. Logic: 'green' = mostly whole foods/safe. 'yellow' = processed/sugary/occasional use (default for most packaged snacks). 'red' = harmful/alcohol/high risk additives. Default to 'yellow' if unsure."
 }
 \`\`\`
+
+**UI State Rules:**
+- **Green:** Clean ingredients, minimal processing, balanced.
+- **Yellow:** Processed, high sugar/salt, "junk food", acceptable in moderation.
+- **Red:** Alcohol, specific harmful additives, non-food items, or very high toxicity risk.
 
 **Constraint:**
 - **FORMATTING:** Use the "•" symbol for bullet points. Separate bullets with a newline character (\\n).

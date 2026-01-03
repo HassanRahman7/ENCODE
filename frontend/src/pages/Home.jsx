@@ -76,7 +76,6 @@ const Home = () => {
         setStage('input');
         setAnalysisData(null);
         setErrorMsg('');
-
     };
 
     return (

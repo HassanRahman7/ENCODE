@@ -17,8 +17,40 @@ const cardVariant = {
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50, damping: 20 } }
 };
 
+// UI State Stylings
+const stateStyles = {
+    green: {
+        gradient: "from-emerald-100 to-teal-100 dark:from-emerald-500/10 dark:to-teal-500/10",
+        border: "border-emerald-200 dark:border-emerald-500/10",
+        iconBg: "bg-emerald-200 dark:bg-emerald-500/20",
+        iconColor: "text-emerald-700 dark:text-emerald-300",
+        title: "text-emerald-900 dark:text-white",
+        text: "text-emerald-900 dark:text-emerald-100/80"
+    },
+    yellow: {
+        gradient: "from-amber-100 to-orange-100 dark:from-amber-500/10 dark:to-orange-500/10",
+        border: "border-amber-200 dark:border-amber-500/10",
+        iconBg: "bg-amber-200 dark:bg-amber-500/20",
+        iconColor: "text-amber-800 dark:text-amber-300",
+        title: "text-amber-900 dark:text-white",
+        text: "text-amber-900 dark:text-amber-100/80"
+    },
+    red: {
+        gradient: "from-red-100 to-rose-100 dark:from-red-500/10 dark:to-rose-500/10",
+        border: "border-red-200 dark:border-red-500/10",
+        iconBg: "bg-red-200 dark:bg-red-500/20",
+        iconColor: "text-red-700 dark:text-red-300",
+        title: "text-red-900 dark:text-white",
+        text: "text-red-900 dark:text-red-100/80"
+    }
+};
+
 const AIResponse = ({ data, onReset }) => {
     if (!data) return null;
+
+    // Default to yellow (caution) if undefined, or map 'green'/'red' appropriately
+    const theme = stateStyles[data.uiState] || stateStyles.yellow;
+
 
     return (
         <div className="w-full max-w-3xl mx-auto pb-20">
@@ -62,31 +94,26 @@ const AIResponse = ({ data, onReset }) => {
                 {/* Thought 4: Guidance (Primary Conclusion) */}
                 <motion.div
                     variants={cardVariant}
-                    className="rounded-3xl p-8 md:p-10 border transition-colors duration-500
-                             bg-gradient-to-br from-emerald-100 to-teal-100 border-emerald-200
-                             dark:from-emerald-500/10 dark:to-teal-500/10 dark:border-emerald-500/10"
+                    className={`rounded-3xl p-8 md:p-10 border transition-colors duration-500
+                             bg-gradient-to-br ${theme.gradient} ${theme.border}`}
                 >
                     <div className="text-center">
-                        <div className="inline-flex p-3 rounded-full mb-4
-                                      bg-emerald-200 text-emerald-700
-                                      dark:bg-emerald-500/20 dark:text-emerald-300">
+                        <div className={`inline-flex p-3 rounded-full mb-4
+                                      ${theme.iconBg} ${theme.iconColor}`}>
                             <ShieldCheck className="w-8 h-8" />
                         </div>
-                        <h3 className="text-2xl font-bold mb-4
-                                     text-emerald-900 dark:text-white">
+                        <h3 className={`text-2xl font-bold mb-4 ${theme.title}`}>
                             Recommendation
                         </h3>
 
                         {/* Primary Recommendation (Bold) */}
-                        <p className="text-xl font-bold mb-4 leading-snug
-                                    text-emerald-900 dark:text-white">
+                        <p className={`text-xl font-bold mb-4 leading-snug ${theme.title}`}>
                             {data.primaryRecommendation || data.guidance}
                         </p>
 
                         {/* Contextual Explanation (Regular) */}
                         {data.contextualExplanation && (
-                            <p className="text-lg leading-relaxed
-                                         text-emerald-800/90 dark:text-emerald-100/80">
+                            <p className={`text-lg leading-relaxed ${theme.text}`}>
                                 {data.contextualExplanation}
                             </p>
                         )}
