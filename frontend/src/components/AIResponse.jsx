@@ -59,6 +59,30 @@ const AIResponse = ({ data, onReset }) => {
                     </p>
                 </motion.div>
 
+                {/* Thought 4: Guidance (Primary Conclusion) */}
+                <motion.div
+                    variants={cardVariant}
+                    className="rounded-3xl p-8 md:p-10 border transition-colors duration-500
+                             bg-gradient-to-br from-emerald-100 to-teal-100 border-emerald-200
+                             dark:from-emerald-500/10 dark:to-teal-500/10 dark:border-emerald-500/10"
+                >
+                    <div className="text-center">
+                        <div className="inline-flex p-3 rounded-full mb-4
+                                      bg-emerald-200 text-emerald-700
+                                      dark:bg-emerald-500/20 dark:text-emerald-300">
+                            <ShieldCheck className="w-8 h-8" />
+                        </div>
+                        <h3 className="text-2xl font-bold mb-2
+                                     text-emerald-900 dark:text-white">
+                            Recommendation
+                        </h3>
+                        <p className="text-xl font-medium
+                                    text-emerald-800 dark:text-emerald-100/80">
+                            {data.guidance}
+                        </p>
+                    </div>
+                </motion.div>
+
                 {/* Thought 2: Why it Matters */}
                 <motion.div
                     variants={cardVariant}
@@ -108,30 +132,6 @@ const AIResponse = ({ data, onReset }) => {
                                 {data.tradeOffs}
                             </p>
                         </div>
-                    </div>
-                </motion.div>
-
-                {/* Thought 4: Guidance (Primary Conclusion) */}
-                <motion.div
-                    variants={cardVariant}
-                    className="rounded-3xl p-8 md:p-10 border transition-colors duration-500
-                             bg-gradient-to-br from-emerald-100 to-teal-100 border-emerald-200
-                             dark:from-emerald-500/10 dark:to-teal-500/10 dark:border-emerald-500/10"
-                >
-                    <div className="text-center">
-                        <div className="inline-flex p-3 rounded-full mb-4
-                                      bg-emerald-200 text-emerald-700
-                                      dark:bg-emerald-500/20 dark:text-emerald-300">
-                            <ShieldCheck className="w-8 h-8" />
-                        </div>
-                        <h3 className="text-2xl font-bold mb-2
-                                     text-emerald-900 dark:text-white">
-                            Recommendation
-                        </h3>
-                        <p className="text-xl font-medium
-                                    text-emerald-800 dark:text-emerald-100/80">
-                            {data.guidance}
-                        </p>
                     </div>
                 </motion.div>
 
