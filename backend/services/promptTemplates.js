@@ -26,7 +26,8 @@ Return a single JSON object with the following structure:
   "whyItMatters": "• Bullet 1: Health impact (Max 10 words)\\n• Bullet 2: Key additive warning (Max 10 words)\\n• Bullet 3: Processing level (Max 10 words)",
   "tradeOffs": "• Bullet 1: Positive aspect (Max 10 words)\\n• Bullet 2: Negative aspect (Max 10 words)",
   "uncertainty": "Explicitly state if you are unsure about any ingredients. If none, say 'Confidence is high.'",
-  "guidance": "A final, friendly recommendation (e.g., 'Enjoy in moderation as a treat.')."
+  "primaryRecommendation": "A short, clear 1-2 line summary recommendation answering 'Should I consume this?'. (e.g., 'Generally acceptable, but best enjoyed in moderation.'). Emphasize clarity.",
+  "contextualExplanation": "A short, reasoned paragraph explaining 'Why' and 'Under what conditions'. Discuss frequency (daily vs occasional), portion size, or specific contexts (e.g. 'Good for a workout, but high in sugar for sedentary days'). Be advisory, not prescriptive. Avoid medical absolutes."
 }
 \`\`\`
 

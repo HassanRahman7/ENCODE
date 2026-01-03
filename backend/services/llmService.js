@@ -35,7 +35,8 @@ async function analyzeIngredients(ingredientText) {
       whyItMatters: "We encountered an error analyzing the ingredients directly. This is a fallback.",
       tradeOffs: "Analysis not live.",
       uncertainty: "System error.",
-      guidance: "Please check your backend configuration."
+      primaryRecommendation: "Please check your backend configuration.",
+      contextualExplanation: "We could not reach the analysis service to provide a contextual recommendation."
     };
   }
 }

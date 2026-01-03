@@ -72,14 +72,24 @@ const AIResponse = ({ data, onReset }) => {
                                       dark:bg-emerald-500/20 dark:text-emerald-300">
                             <ShieldCheck className="w-8 h-8" />
                         </div>
-                        <h3 className="text-2xl font-bold mb-2
+                        <h3 className="text-2xl font-bold mb-4
                                      text-emerald-900 dark:text-white">
                             Recommendation
                         </h3>
-                        <p className="text-xl font-medium
-                                    text-emerald-800 dark:text-emerald-100/80">
-                            {data.guidance}
+
+                        {/* Primary Recommendation (Bold) */}
+                        <p className="text-xl font-bold mb-4 leading-snug
+                                    text-emerald-900 dark:text-white">
+                            {data.primaryRecommendation || data.guidance}
                         </p>
+
+                        {/* Contextual Explanation (Regular) */}
+                        {data.contextualExplanation && (
+                            <p className="text-lg leading-relaxed
+                                         text-emerald-800/90 dark:text-emerald-100/80">
+                                {data.contextualExplanation}
+                            </p>
+                        )}
                     </div>
                 </motion.div>
 
