@@ -117,11 +117,11 @@ const Home = () => {
                     </div>
 
                     <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 transition-colors duration-500 text-gray-900 dark:text-white">
-                        Ingreda - An Ingredient Co-Pilot
+                        INGREDA - An Ingredient Co-Pilot
                     </h1>
 
                     <p className="text-lg max-w-lg mx-auto transition-colors duration-500 text-gray-600 dark:text-gray-400">
-                        Instant clarity on what you eat. No databases, just intelligence.
+                        Instant clarity on what you eat.
                     </p>
                 </motion.div>
 

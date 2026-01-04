@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 
 // A. Connect to Upstash Redis (Safe Mode for Node v22+)
 const redisClient = new Redis(process.env.REDIS_URL, {
-    family: 0,           // ⚠️ Force IPv4 (Fixes network connection errors)
+    family: 0,           
     tls: {
         rejectUnauthorized: false // Fixes SSL handshake errors
     },
