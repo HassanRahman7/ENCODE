@@ -34,9 +34,9 @@ const limiter = rateLimit({
     max: 5, // Limit each IP to 5 requests per windowMs
     standardHeaders: true,
     legacyHeaders: false,
-    message: { 
-        error: "Too many requests", 
-        message: "You have used up your free scans. Wait 15 mins!" 
+    message: {
+        error: "Too many requests",
+        message: "You have used up your free scans. Wait 15 mins!"
     },
     store: new RedisStore({
         sendCommand: (...args) => redisClient.call(...args),
@@ -52,9 +52,9 @@ app.use('/api/analyze', limiter, analyzeRoute);
 
 // Basic health check
 app.get('/', (req, res) => {
-  res.send('AI Ingredient Copilot Backend is running.');
+    res.send('AI Ingredient Copilot Backend is running.');
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });

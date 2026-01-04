@@ -117,7 +117,7 @@ const Home = () => {
                     </div>
 
                     <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 transition-colors duration-500 text-gray-900 dark:text-white">
-                        Ingredient Co-Pilot
+                        Ingreda - An Ingredient Co-Pilot
                     </h1>
 
                     <p className="text-lg max-w-lg mx-auto transition-colors duration-500 text-gray-600 dark:text-gray-400">
