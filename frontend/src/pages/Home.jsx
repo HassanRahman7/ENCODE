@@ -5,7 +5,7 @@ import InputSurface from '../components/InputSurface';
 import AIResponse from '../components/AIResponse';
 import { AlertCircle, Zap, Loader2 } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/analyze';
+const API_URL = import.meta.env.VITE_API_URL || 'https://ingreda.onrender.com';
 
 
 const LOADING_MESSAGES = [
