@@ -20,7 +20,7 @@ You can give Ingreda ingredient information in multiple ways:
 
 📸 Scan ingredients using your camera
 
-🔊 Listen to the AI read the result aloud (female voice)
+🔊 Listen to the AI read the result aloud 
 
 Ingreda then:
 
