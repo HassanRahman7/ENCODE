@@ -20,7 +20,7 @@ You can give Ingreda ingredient information in multiple ways:
 
 📸 Scan ingredients using your camera
 
-🔊 Listen to the AI read the result aloud 
+🔊 Listen to the AI read the result aloud (female voice)
 
 Ingreda then:
 
@@ -56,20 +56,21 @@ Deployment: Vercel (frontend) + Render (backend)
 
 🚀 Running Ingreda on Your Local Machine (Step-by-Step)
 
-Follow these steps carefully — you do not need deep technical knowledge.
+Don’t worry — follow these steps carefully and you’ll be running it locally.
 
 ✅ Step 1: Install Required Software
 
-Install these once:
+Make sure you have these installed:
 
 Node.js (v18 or later)
-https://nodejs.org
- (choose LTS)
+Download from: https://nodejs.org
+
+(Install the LTS version)
 
 Git
-https://git-scm.com
+Download from: https://git-scm.com
 
-Restart your computer after installing.
+After installing, restart your computer once.
 
 ✅ Step 2: Clone the Project
 
@@ -78,7 +79,7 @@ Open Command Prompt / Terminal and run:
 git clone <your-repository-url>
 
 
-Move into the project folder:
+Then move into the project folder:
 
 cd ingreda
 
@@ -89,18 +90,18 @@ Go to the backend folder:
 cd backend
 
 
-Install dependencies:
+Install backend dependencies:
 
 npm install
 
-✅ Step 4: Create Backend Environment File
+✅ Step 4: Create the Backend Environment File
 
 Inside the backend folder, create a file named:
 
 .env
 
 
-Add the following:
+Add the following content:
 
 PORT=5000
 NODE_ENV=development
@@ -109,10 +110,11 @@ GEMINI_API_KEY=your_gemini_api_key_here
 GEMINI_MODEL=gemini-1.5-flash
 
 
-🔑 Get a Gemini API key from:
+🔑 Important:
+You must get a Gemini API key from:
 👉 https://aistudio.google.com
 
-(Keep this key private.)
+(Do NOT share this key publicly.)
 
 ✅ Step 5: Start the Backend Server
 
@@ -121,12 +123,12 @@ Still inside /backend, run:
 node index.js
 
 
-You should see:
+You should see something like:
 
 Server running on port 5000
 
 
-Leave this terminal open.
+Keep this terminal open.
 
 ✅ Step 6: Set Up the Frontend
 
@@ -135,21 +137,29 @@ Open a new terminal window and go to the frontend folder:
 cd frontend
 
 
-Install dependencies:
+Install frontend dependencies:
 
 npm install
 
+✅ Step 7: Configure Frontend Environment Variable
 
-ℹ️ No .env file is required for the frontend.
+Create a file in /frontend called:
 
-✅ Step 7: Start the Frontend
+.env
+
+
+Add:
+
+VITE_API_URL=http://localhost:5000
+
+✅ Step 8: Start the Frontend
 
 Run:
 
 npm run dev
 
 
-You’ll see something like:
+You’ll see a message like:
 
 Local: http://localhost:5173
 
@@ -158,7 +168,7 @@ Open that link in your browser 🎉
 
 ✅ You’re Done!
 
-Ingreda is now running locally on your machine.
+Ingreda should now be running locally on your machine.
 
 You can:
 
@@ -166,11 +176,11 @@ Paste ingredients
 
 Upload label photos
 
-Use voice input
+Try voice input
 
-Listen to AI voice output
+Hear AI voice output
 
-See the UI change colors based on the analysis
+See the UI adapt (green / yellow / red)
 
 🧪 Example Input to Try
 
@@ -186,20 +196,20 @@ No accounts required
 
 No ingredient databases
 
-All analysis is done on demand
+Everything runs on-demand
 
 ⚠️ Disclaimer
 
 Ingreda provides general informational guidance only.
-It is not medical advice.
+It is not medical advice and should not replace professional health consultation.
 
 🏆 Hackathon Note
 
-This project was built for a hackathon with a focus on:
+This project was built as part of a hackathon with a focus on:
 
-AI-native interaction
+AI-native design
 
-Reasoned explanations
+Reasoning over raw data
 
 Clear decision-making at the moment of choice
 
